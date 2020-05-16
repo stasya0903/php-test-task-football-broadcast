@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
           crossorigin="anonymous">
 
     <title>{{ match.tournament }} || {{ match.homeTeam.name }} – {{ match.awayTeam.name }}</title>
@@ -121,8 +122,13 @@
                         </td>
                         <td>
                             {{ player.name }}
+                            {% if player.getRedCard %}
+                                <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/yellow_red.png">
+                            {% elseif player.getYellowCard %}
+                                <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/card.png">
+                            {% endif %}
                             {% if player.getGoals > 0 %}
-                                {% for i in 1..player.getGoals %}
+                                {% for goal in 1..player.getGoals %}
                                     <img src="https://www.soccer.ru/sites/all/themes/newtheme/images/events-icons/goal.png">
                                 {% endfor %}
                             {% endif %}
