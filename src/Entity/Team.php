@@ -4,6 +4,17 @@ namespace App\Entity;
 
 class Team
 {
+    private const GOALKEEPERS = 'В';
+    private const DEFENSES = 'З';
+    private const MIDFIELDERS = 'П';
+    private const FORWARDS = 'Н';
+
+    public const POSITIONS = [
+        self::GOALKEEPERS,
+        self::DEFENSES,
+        self::MIDFIELDERS,
+        self::FORWARDS,
+    ];
     private string $name;
     private string $country;
     private string $logo;
@@ -11,6 +22,7 @@ class Team
      * @var Player[]
      */
     private array $players;
+    private array $positionsTime;
     private string $coach;
     private int $goals;
 
@@ -24,6 +36,7 @@ class Team
         $this->players = $players;
         $this->coach = $coach;
         $this->goals = 0;
+        $this->positionsTime = [];
     }
 
     public function getName(): string
@@ -102,5 +115,38 @@ class Team
                 );
             }
         }
+    }
+
+    public function getTotalTimeByThePosition($positionName)
+    {
+        return array_reduce($this->getPlayersByPosition($positionName), function ($totalTime, $player) {
+            $totalTime += $player->getPlayTime();
+            return $totalTime;
+        });
+    }
+
+
+    private function getPlayersByPosition($positionName)
+    {
+        return array_filter($this->getPlayers(), function ($player) use ($positionName) {
+            $position = $player->getPosition();
+            return $position == $positionName;
+        });
+    }
+
+    public function setPositionsTime($positionsTime, $position): void
+    {
+        $this->positionsTime[] = [
+            'name' => $position,
+            'time' => $positionsTime
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function getPositionsTime(): array
+    {
+        return $this->positionsTime;
     }
 }

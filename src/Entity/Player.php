@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Entity;
 
 class Player
@@ -14,8 +15,9 @@ class Player
     private int $goals;
     private bool $yellowCard;
     private bool $redCard;
+    private string $position;
 
-    public function __construct(int $number, string $name)
+    public function __construct(int $number, string $name, string $position)
     {
         $this->number = $number;
         $this->name = $name;
@@ -25,6 +27,7 @@ class Player
         $this->goals = 0;
         $this->yellowCard = false;
         $this->redCard = false;
+        $this->position = $position;
     }
 
     public function getNumber(): int
@@ -54,7 +57,7 @@ class Player
 
     public function getPlayTime(): int
     {
-        if(!$this->outMinute) {
+        if (!$this->outMinute) {
             return 0;
         }
 
@@ -73,20 +76,24 @@ class Player
         $this->playStatus = self::BENCH_PLAY_STATUS;
     }
 
-    /**
-     * @return int
-     */
     public function getGoals(): int
     {
         return $this->goals;
     }
+
     public function getYellowCard(): bool
     {
         return $this->yellowCard;
     }
+
     public function getRedCard(): bool
     {
         return $this->redCard;
+    }
+
+    public function getPosition(): string
+    {
+        return $this->position;
     }
 
     public function madeGoal()
@@ -96,7 +103,7 @@ class Player
 
     public function gotYellowCard($minute)
     {
-        if($this->yellowCard){
+        if ($this->yellowCard) {
             $this->gotRedCard($minute);
         } else {
             $this->yellowCard = true;
@@ -109,4 +116,6 @@ class Player
         $this->redCard = true;
         $this->goToBench($minute);
     }
+
+
 }

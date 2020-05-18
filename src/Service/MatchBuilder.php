@@ -73,7 +73,7 @@ class MatchBuilder
         $teamInfo = $event['details']["team$teamNumber"];
         $players = [];
         foreach ($teamInfo['players'] as $playerInfo) {
-            $players[] = new Player($playerInfo['number'], $playerInfo['name']);
+            $players[] = new Player($playerInfo['number'], $playerInfo['name'], $playerInfo['position']);
         }
 
         return new Team($teamInfo['title'], $teamInfo['country'], $teamInfo['logo'], $players, $teamInfo['coach']);
@@ -92,17 +92,19 @@ class MatchBuilder
 
                     $players = $details['team1']['startPlayerNumbers'] ?? [];
                     if (count($players)) {
-                        $this->goToPlay($match->getHomeTeam(), $players, $minute);
+                        $this->goToPlay($match->getHomeTeam(), $players, 0);
                     }
                     $players = $details['team2']['startPlayerNumbers'] ?? [];
                     if (count($players)) {
-                        $this->goToPlay($match->getAwayTeam(), $players, $minute);
+                        $this->goToPlay($match->getAwayTeam(), $players, 0);
                     }
                     break;
                 case 'finishPeriod':
                     if ($period === 2) {
                         $this->goToBenchAllPlayers($match->getHomeTeam(), $minute);
                         $this->goToBenchAllPlayers($match->getAwayTeam(), $minute);
+                        $this->savePositionTimes($match->getHomeTeam());
+                        $this->savePositionTimes($match->getAwayTeam());
                     }
                     break;
                 case 'replacePlayer':
@@ -174,6 +176,7 @@ class MatchBuilder
         }
     }
 
+
     private function getTeamByName(Match $match, string $name): Team
     {
         if ($match->getHomeTeam()->getName() === $name) {
@@ -192,5 +195,14 @@ class MatchBuilder
                 $match->getAwayTeam()->getName()
             )
         );
+    }
+
+    private function savePositionTimes(Team $team)
+    {
+        foreach (Team::POSITIONS as $position) {
+            $time = $team->getTotalTimeByThePosition($position);
+            $team->setPositionsTime($time, $position);
+        }
+
     }
 }
