@@ -22,7 +22,7 @@ class Team
      * @var Player[]
      */
     private array $players;
-    private array $positionsTime;
+    private array $positionsInfo;
     private string $coach;
     private int $goals;
 
@@ -36,7 +36,7 @@ class Team
         $this->players = $players;
         $this->coach = $coach;
         $this->goals = 0;
-        $this->positionsTime = [];
+        $this->positionsInfo = $this->setPositionsInfo(self::POSITIONS);
     }
 
     public function getName(): string
@@ -117,33 +117,26 @@ class Team
         }
     }
 
-    public function getTotalTimeByThePosition($positionName): int
+    public function getPositionsInfo(): array
     {
-        return array_reduce($this->getPlayersByPosition($positionName), function ($totalTime, $player) {
-            $totalTime += $player->getPlayTime();
-            return $totalTime;
-        });
+        return $this->positionsInfo;
     }
 
-
-    private function getPlayersByPosition($positionName): array
+    private function setPositionsInfo($positions): array
     {
-        return array_filter($this->getPlayers(), function ($player) use ($positionName) {
-            $position = $player->getPosition();
-            return $position == $positionName;
-        });
+        $positionsInfo = [];
+        foreach ($positions as $position => $code) {
+            $positionsInfo += [
+                $code => [
+                    'name' => $position,
+                    'time' => 0
+                ]];
+        }
+        return $positionsInfo;
     }
 
-    public function setPositionsTime($positionsTime, $position): void
+    public function updatePositionTime($position, $time): void
     {
-        $this->positionsTime[] = [
-            'name' => $position,
-            'time' => $positionsTime
-        ];
-    }
-
-    public function getPositionsTime(): array
-    {
-        return $this->positionsTime;
+        $this->positionsInfo[$position]['time'] += $time;
     }
 }
