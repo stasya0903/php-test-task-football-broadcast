@@ -102,8 +102,8 @@ class MatchBuilder
                 case 'finishPeriod':
                     if ($period === 2) {
                         $this->goToBenchAllPlayers($match->getHomeTeam(), $minute);
-                        $this->goToBenchAllPlayers($match->getAwayTeam(), $minute);
                         $this->savePositionTimes($match->getHomeTeam());
+                        $this->goToBenchAllPlayers($match->getAwayTeam(), $minute);
                         $this->savePositionTimes($match->getAwayTeam());
                     }
                     break;
@@ -197,11 +197,14 @@ class MatchBuilder
         );
     }
 
-    private function savePositionTimes(Team $team)
+    private function savePositionTimes(Team $team): void
     {
-        foreach (Team::POSITIONS as $position => $code) {
-            $time = $team->getTotalTimeByThePosition($code);
-            $team->setPositionsTime($time, $position);
+        $players = $team->getPlayers();
+        foreach ($players as $player){
+            $time = $player->getPlayTime();
+            if($time > 0){
+                $team->updatePositionTime($player->getPosition(), $time);
+            }
         }
 
     }
