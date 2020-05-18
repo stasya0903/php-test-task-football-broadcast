@@ -199,8 +199,8 @@ class MatchBuilder
 
     private function savePositionTimes(Team $team)
     {
-        foreach (Team::POSITIONS as $position) {
-            $time = $team->getTotalTimeByThePosition($position);
+        foreach (Team::POSITIONS as $position => $code) {
+            $time = $team->getTotalTimeByThePosition($code);
             $team->setPositionsTime($time, $position);
         }
 
