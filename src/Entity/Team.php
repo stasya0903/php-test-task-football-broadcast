@@ -10,10 +10,10 @@ class Team
     private const FORWARDS = 'Н';
 
     public const POSITIONS = [
-        self::GOALKEEPERS,
-        self::DEFENSES,
-        self::MIDFIELDERS,
-        self::FORWARDS,
+        'вратарь' => self::GOALKEEPERS,
+        'защита' => self::DEFENSES,
+        'полузащита' => self::MIDFIELDERS,
+        'нападение' => self::FORWARDS,
     ];
     private string $name;
     private string $country;
@@ -117,7 +117,7 @@ class Team
         }
     }
 
-    public function getTotalTimeByThePosition($positionName)
+    public function getTotalTimeByThePosition($positionName): int
     {
         return array_reduce($this->getPlayersByPosition($positionName), function ($totalTime, $player) {
             $totalTime += $player->getPlayTime();
@@ -126,7 +126,7 @@ class Team
     }
 
 
-    private function getPlayersByPosition($positionName)
+    private function getPlayersByPosition($positionName): array
     {
         return array_filter($this->getPlayers(), function ($player) use ($positionName) {
             $position = $player->getPosition();
@@ -142,9 +142,6 @@ class Team
         ];
     }
 
-    /**
-     * @return array
-     */
     public function getPositionsTime(): array
     {
         return $this->positionsTime;
